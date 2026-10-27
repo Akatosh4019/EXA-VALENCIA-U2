@@ -1,0 +1,1 @@
+Jornales se transporta entre formulario, dominio, DTO, API y SQLite. Se muestra en el detalle de cada labor y se edita en el formulario. La migración 1.sqm agrega la columna con cero para registros previos. Verificación: 10 pruebas commonTest aprobadas y APK compilado.
