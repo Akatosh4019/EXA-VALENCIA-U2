@@ -1,0 +1,40 @@
+CREATE TABLE lote (
+ id INTEGER NOT NULL PRIMARY KEY, codigo TEXT NOT NULL, nombre TEXT NOT NULL,
+ hectareas REAL NOT NULL, cultivo TEXT NOT NULL, valle TEXT NOT NULL,
+ campaniaCerrada INTEGER NOT NULL, dosisMaxima REAL NOT NULL
+);
+CREATE TABLE labor (
+ id INTEGER NOT NULL PRIMARY KEY, loteId INTEGER NOT NULL, tipo TEXT NOT NULL,
+ fecha TEXT NOT NULL, responsable TEXT NOT NULL, cantidad REAL NOT NULL,
+ observacion TEXT NOT NULL, pendiente INTEGER NOT NULL,
+ autorId INTEGER NOT NULL DEFAULT 0, registradaEn TEXT NOT NULL DEFAULT '',
+ claveCliente TEXT NOT NULL DEFAULT '', propietarioPendiente TEXT NOT NULL DEFAULT ''
+);
+CREATE TABLE sincronizacion (id INTEGER NOT NULL PRIMARY KEY, instante INTEGER NOT NULL);
+
+observarLotes:
+SELECT * FROM lote ORDER BY codigo;
+observarLabores:
+SELECT * FROM labor ORDER BY fecha DESC, id DESC;
+observarLaboresPorLote:
+SELECT * FROM labor WHERE loteId = ? ORDER BY fecha DESC;
+siguienteIdLocal:
+SELECT COALESCE(MIN(id), 0) FROM labor;
+pendientes:
+SELECT * FROM labor WHERE pendiente = 1 AND propietarioPendiente = ? ORDER BY id;
+buscarLabor:
+SELECT * FROM labor WHERE id = ?;
+guardarLote:
+INSERT OR REPLACE INTO lote VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+guardarLabor:
+INSERT OR REPLACE INTO labor VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+borrarLabor:
+DELETE FROM labor WHERE id = ?;
+borrarLotes:
+DELETE FROM lote;
+borrarSincronizadas:
+DELETE FROM labor WHERE pendiente = 0;
+ultimaSincronizacion:
+SELECT instante FROM sincronizacion WHERE id = 1;
+guardarSincronizacion:
+INSERT OR REPLACE INTO sincronizacion VALUES (1, ?);
