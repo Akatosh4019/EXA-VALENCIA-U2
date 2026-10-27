@@ -15,7 +15,7 @@ El proyecto usa Kotlin Multiplatform con los modulos `androidApp` y `shared`. En
 
 ```text
 presentation/   App.kt y listado/CampoViewModel.kt; pantallas y estado observable
- domain/        modelos, contratos de repositorio y casos de uso
+domain/         modelos, contratos de repositorio y casos de uso
  data/local/    SQLDelight, estado de sesion y contrato de almacenamiento seguro
  data/remote/   Cliente Ktor, AgroApi, DTO y traduccion de errores
  data/repository/ repositorio offline-first que coordina red y persistencia
@@ -44,7 +44,7 @@ La URL base esta centralizada en `shared/src/commonMain/kotlin/pe/upeu/agrosierr
 | Eliminar labor | `DELETE /labores/{id}` | Eliminacion sin cuerpo |
 | Cerrar campania | `POST /lotes/{id}/cerrar-campania` | Lote actualizado, si el usuario tiene privilegio |
 
-Los DTO remotos se mantienen en `data/remote/dto` y se convierten a modelos de dominio; la interfaz no usa directamente las respuestas JSON. El cliente Ktor se configura una vez en DI y agrega centralmente `Authorization: Bearer <token>` a las rutas protegidas. El token se cifra con AES/GCM y una clave custodida por Android Keystore.
+Los DTO remotos se mantienen en `data/remote/dto` y se convierten a modelos de dominio; la interfaz no usa directamente las respuestas JSON. El cliente Ktor se configura una vez en DI y agrega centralmente `Authorization: Bearer <token>` a las rutas protegidas. El token se cifra con AES/GCM y una clave custodiada por Android Keystore.
 
 ## Roles y privilegios del caso
 
