@@ -9,4 +9,4 @@ class GuardarLaborUseCase(private val repo: CampoRepository) {
         return repo.guardar(l)
     }
 }
-class FiltrarLotesUseCase { operator fun invoke(lotes: List<Lote>,busqueda: String,valle: String)=lotes.filter { (valle.isBlank() || it.valle==valle) && (it.nombre.contains(busqueda,true) || it.codigo.contains(busqueda,true)) } }
+class FiltrarLotesUseCase { operator fun invoke(lotes: List<Lote>,busqueda: String,valle: String,soloAbiertas: Boolean=false)=lotes.filter { (!soloAbiertas || !it.campaniaCerrada) && (valle.isBlank() || it.valle==valle) && (it.nombre.contains(busqueda,true) || it.codigo.contains(busqueda,true)) } }

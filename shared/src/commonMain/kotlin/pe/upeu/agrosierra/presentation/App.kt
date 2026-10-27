@@ -66,6 +66,7 @@ fun App(vm: CampoViewModel) {
                             Text(if(minutos==null) "Nunca se ha sincronizado" else if(minutos<1) "Actualizado hace menos de un minuto" else "Actualizado hace $minutos minutos")
                             Button(onClick=vm::actualizar,enabled=!s.ocupado) { Text("Sincronizar") }
                             OutlinedTextField(value=s.busqueda,onValueChange=vm::buscar,label={Text("Buscar nombre o código")},modifier=Modifier.fillMaxWidth())
+                            Row { Checkbox(checked=s.soloAbiertas,onCheckedChange=vm::soloAbiertas);Text("Solo campañas abiertas",modifier=Modifier.padding(top=12.dp)) }
                             var abierto by remember { mutableStateOf(false) }
                             Box { OutlinedButton(onClick={abierto=true}) { Text("Valle: ${s.valle.ifBlank { "Todos" }}") };DropdownMenu(expanded=abierto,onDismissRequest={abierto=false}) { (listOf("")+s.lotes.map { it.valle }.distinct()).forEach { valle -> DropdownMenuItem(text={Text(valle.ifBlank { "Todos" })},onClick={vm.valle(valle);abierto=false}) } } }
                         }
@@ -101,3 +102,4 @@ fun App(vm: CampoViewModel) {
         TextButton(onClick=cancelar,enabled=!ocupado) { Text("Cancelar") }
     }
 }
+
