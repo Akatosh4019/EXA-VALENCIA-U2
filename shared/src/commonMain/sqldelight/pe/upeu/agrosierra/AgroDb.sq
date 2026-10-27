@@ -39,3 +39,6 @@ ultimaSincronizacion:
 SELECT instante FROM sincronizacion WHERE id = 1;
 guardarSincronizacion:
 INSERT OR REPLACE INTO sincronizacion VALUES (1, ?);
+
+observarPendientesPorLote:
+SELECT loteId, COUNT(*) AS cantidad FROM labor WHERE pendiente = 1 GROUP BY loteId;

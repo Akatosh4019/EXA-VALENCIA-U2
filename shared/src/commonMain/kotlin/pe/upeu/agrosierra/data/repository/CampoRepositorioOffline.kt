@@ -13,6 +13,7 @@ class CampoRepositorioOffline(private val api: AgroApi,private val local: BaseLo
     private val mutex=Mutex()
     override fun observarLotes()=local.lotes()
     override fun observarLabores()=local.labores()
+    override fun observarPendientes()=local.observarPendientes()
     override fun ultimaSincronizacion()=local.ultimaSincronizacion()
     override suspend fun sincronizar(): ResumenSync=mutex.withLock {
         val usuario=sesion.sesion.value?.usuario ?: throw ErrorApiException(ErrorApi.NoAutenticado)
