@@ -51,7 +51,7 @@ fun App(vm: CampoViewModel) {
                         items(labores,key={it.id}) { labor ->
                             Card(modifier=Modifier.fillMaxWidth()) { Column(Modifier.padding(16.dp),verticalArrangement=Arrangement.spacedBy(6.dp)) {
                                 Text("${labor.tipo} · ${labor.fecha}",style=MaterialTheme.typography.titleMedium)
-                                Text("Responsable: ${labor.responsable}\nCantidad: ${labor.cantidad}\n${labor.observacion}")
+                                Text("Responsable: ${labor.responsable}\nCantidad: ${labor.cantidad}\nJornales: ${labor.jornales}\n${labor.observacion}")
                                 if(labor.pendiente) Text("Pendiente de sincronización",color=MaterialTheme.colorScheme.primary)
                                 Row {
                                     if(!lote.campaniaCerrada && vm.puedeEditar(labor)) TextButton(onClick={formulario=labor},enabled=!s.ocupado) { Text("Corregir") }
@@ -91,14 +91,15 @@ fun App(vm: CampoViewModel) {
     }
 }
 @Composable private fun Formulario(labor: Labor,errores: Map<String,String>,ocupado: Boolean,guardar: (Labor)->Unit,cancelar: ()->Unit) {
-    var tipo by remember(labor.id) { mutableStateOf(labor.tipo) };var fecha by remember(labor.id) { mutableStateOf(labor.fecha) };var cantidad by remember(labor.id) { mutableStateOf(labor.cantidad.toString()) };var observacion by remember(labor.id) { mutableStateOf(labor.observacion) }
+    var tipo by remember(labor.id) { mutableStateOf(labor.tipo) };var fecha by remember(labor.id) { mutableStateOf(labor.fecha) };var cantidad by remember(labor.id) { mutableStateOf(labor.cantidad.toString()) };var jornales by remember(labor.id) { mutableStateOf(labor.jornales.toString()) };var observacion by remember(labor.id) { mutableStateOf(labor.observacion) }
     Column(verticalArrangement=Arrangement.spacedBy(10.dp)) {
         Text(if(labor.id==0L) "Registrar labor" else "Corregir labor",style=MaterialTheme.typography.headlineSmall)
         TipoLabor.entries.forEach { t -> Row { RadioButton(selected=tipo==t,onClick={tipo=t});Text(t.name,modifier=Modifier.padding(top=12.dp)) } }
         OutlinedTextField(fecha,{fecha=it},label={Text("Fecha AAAA-MM-DD")},isError="fecha" in errores,modifier=Modifier.fillMaxWidth());errores["fecha"]?.let { Text(it,color=MaterialTheme.colorScheme.error) }
         OutlinedTextField(cantidad,{cantidad=it},label={Text("Cantidad aplicada")},isError="cantidad" in errores,modifier=Modifier.fillMaxWidth());errores["cantidad"]?.let { Text(it,color=MaterialTheme.colorScheme.error) }
+        OutlinedTextField(jornales,{jornales=it},label={Text("Cantidad de jornales")},isError="jornales" in errores,modifier=Modifier.fillMaxWidth());errores["jornales"]?.let { Text(it,color=MaterialTheme.colorScheme.error) }
         OutlinedTextField(observacion,{observacion=it},label={Text("Observación")},isError="observacion" in errores,modifier=Modifier.fillMaxWidth());errores["observacion"]?.let { Text(it,color=MaterialTheme.colorScheme.error) }
-        Button(onClick={guardar(labor.copy(tipo=tipo,fecha=fecha,cantidad=cantidad.toDoubleOrNull() ?: Double.NaN,observacion=observacion))},enabled=!ocupado) { Text("Guardar") }
+        Button(onClick={guardar(labor.copy(tipo=tipo,fecha=fecha,cantidad=cantidad.toDoubleOrNull() ?: Double.NaN,observacion=observacion,jornales=jornales.toDoubleOrNull() ?: Double.NaN))},enabled=!ocupado) { Text("Guardar") }
         TextButton(onClick=cancelar,enabled=!ocupado) { Text("Cancelar") }
     }
 }

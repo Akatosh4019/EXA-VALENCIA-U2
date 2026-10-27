@@ -26,6 +26,13 @@ class FlujoOfflineTest {
     private val headers=headersOf(HttpHeaders.ContentType,"application/json")
     private val remoto="""{"id":25,"loteId":1,"tipo":"RIEGO","fecha":"2026-10-27","responsable":"Técnico","cantidad":2.0,"observacion":"Prueba"}"""
     private val lote="""{"id":1,"codigo":"LOT-001","nombre":"Parcela","hectareas":3.0,"cultivo":"Maíz","valle":"Mantaro","campaniaCerrada":false,"dosisMaximaPorHectarea":5.0}"""
+    @Test fun jornalesSeConservanEnDtoYBaseLocal() {
+        val dto=Json.decodeFromString<LaborDto>(remoto.dropLast(1)+",\"jornales\":2.5}")
+        val local=BaseLocal(baseEnMemoria())
+        local.guardar(dto.aDominio())
+        assertEquals(2.5,local.buscar(25)!!.jornales)
+        assertEquals(2.5,dto.aDominio().aRequest().jornales)
+    }
     @Test fun convierteDtoSinContaminarDominio() {
         val dto=Json { ignoreUnknownKeys=true }.decodeFromString<LoteDto>(lote.dropLast(1)+",\"campoNuevo\":true}")
         val model=dto.aDominio();assertEquals("LOT-001",model.codigo);assertEquals(3.0,model.hectareas);assertFalse(model.campaniaCerrada)

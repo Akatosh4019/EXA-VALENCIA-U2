@@ -8,7 +8,8 @@ CREATE TABLE labor (
  fecha TEXT NOT NULL, responsable TEXT NOT NULL, cantidad REAL NOT NULL,
  observacion TEXT NOT NULL, pendiente INTEGER NOT NULL,
  autorId INTEGER NOT NULL DEFAULT 0, registradaEn TEXT NOT NULL DEFAULT '',
- claveCliente TEXT NOT NULL DEFAULT '', propietarioPendiente TEXT NOT NULL DEFAULT ''
+ claveCliente TEXT NOT NULL DEFAULT '', propietarioPendiente TEXT NOT NULL DEFAULT '',
+ jornales REAL NOT NULL DEFAULT 0
 );
 CREATE TABLE sincronizacion (id INTEGER NOT NULL PRIMARY KEY, instante INTEGER NOT NULL);
 
@@ -27,7 +28,7 @@ SELECT * FROM labor WHERE id = ?;
 guardarLote:
 INSERT OR REPLACE INTO lote VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 guardarLabor:
-INSERT OR REPLACE INTO labor VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO labor VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 borrarLabor:
 DELETE FROM labor WHERE id = ?;
 borrarLotes:
