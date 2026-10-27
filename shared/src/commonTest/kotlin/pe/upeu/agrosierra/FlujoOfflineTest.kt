@@ -26,6 +26,14 @@ class FlujoOfflineTest {
     private val headers=headersOf(HttpHeaders.ContentType,"application/json")
     private val remoto="""{"id":25,"loteId":1,"tipo":"RIEGO","fecha":"2026-10-27","responsable":"Técnico","cantidad":2.0,"observacion":"Prueba"}"""
     private val lote="""{"id":1,"codigo":"LOT-001","nombre":"Parcela","hectareas":3.0,"cultivo":"Maíz","valle":"Mantaro","campaniaCerrada":false,"dosisMaximaPorHectarea":5.0}"""
+    @Test fun cuentaPendientesPorLoteDesdeSQLite()=runTest {
+        val local=BaseLocal(baseEnMemoria())
+        assertTrue(local.observarPendientes().first().isEmpty())
+        local.guardar(labor().copy(id=-1,loteId=1));local.guardar(labor().copy(id=-2,loteId=1));local.guardar(labor().copy(id=-3,loteId=2))
+        assertEquals(mapOf(1L to 2L,2L to 1L),local.observarPendientes().first())
+        local.reemplazar(-1,labor().copy(id=25,loteId=1,pendiente=false))
+        assertEquals(mapOf(1L to 1L,2L to 1L),local.observarPendientes().first())
+    }
     @Test fun jornalesSeConservanEnDtoYBaseLocal() {
         val dto=Json.decodeFromString<LaborDto>(remoto.dropLast(1)+",\"jornales\":2.5}")
         val local=BaseLocal(baseEnMemoria())

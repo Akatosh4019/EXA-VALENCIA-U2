@@ -71,7 +71,7 @@ fun App(vm: CampoViewModel) {
                             Box { OutlinedButton(onClick={abierto=true}) { Text("Valle: ${s.valle.ifBlank { "Todos" }}") };DropdownMenu(expanded=abierto,onDismissRequest={abierto=false}) { (listOf("")+s.lotes.map { it.valle }.distinct()).forEach { valle -> DropdownMenuItem(text={Text(valle.ifBlank { "Todos" })},onClick={vm.valle(valle);abierto=false}) } } }
                         }
                         if(s.visibles.isEmpty() && !s.ocupado) item { Text(if(s.lotes.isEmpty()) "Aún no hay datos descargados. Conéctate y sincroniza." else "No hay lotes que coincidan con los filtros") }
-                        items(s.visibles,key={it.id}) { item -> Card(onClick={vm.seleccionar(item.id)},modifier=Modifier.fillMaxWidth()) { Column(Modifier.padding(16.dp)) { Text(item.nombre,style=MaterialTheme.typography.titleLarge);Text("${item.codigo} · ${item.valle}\n${item.cultivo} · ${item.hectareas} ha");Text(if(item.campaniaCerrada) "Campaña cerrada" else "Campaña abierta",color=MaterialTheme.colorScheme.primary) } } }
+                        items(s.visibles,key={it.id}) { item -> Card(onClick={vm.seleccionar(item.id)},modifier=Modifier.fillMaxWidth()) { Column(Modifier.padding(16.dp)) { Text(item.nombre,style=MaterialTheme.typography.titleLarge);val pendientes=s.pendientes[item.id] ?: 0; if(pendientes>0) Text("$pendientes labores pendientes",color=MaterialTheme.colorScheme.primary);Text("${item.codigo} · ${item.valle}\n${item.cultivo} · ${item.hectareas} ha");Text(if(item.campaniaCerrada) "Campaña cerrada" else "Campaña abierta",color=MaterialTheme.colorScheme.primary) } } }
                     }
                 }
                 item { Text("Roberto Samuel Valencia Saavedra",style=MaterialTheme.typography.labelSmall) }

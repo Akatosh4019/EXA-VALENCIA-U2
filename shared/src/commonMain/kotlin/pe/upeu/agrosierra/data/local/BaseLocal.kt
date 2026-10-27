@@ -3,6 +3,7 @@ package pe.upeu.agrosierra.data.local
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
 import pe.upeu.agrosierra.domain.model.*
 
 class BaseLocal(private val db: AgroDatabase) {
@@ -11,6 +12,7 @@ class BaseLocal(private val db: AgroDatabase) {
     private fun labor(id: Long,loteId: Long,tipo: String,fecha: String,responsable: String,cantidad: Double,observacion: String,pendiente: Long,autor: Long,registrada: String,clave: String,propietario: String,jornales: Double)=Labor(id,loteId,TipoLabor.valueOf(tipo),fecha,responsable,cantidad,observacion,pendiente!=0L,autor,registrada,clave,propietario,jornales)
     fun lotes()=q.observarLotes(::lote).asFlow().mapToList(Dispatchers.Default)
     fun labores()=q.observarLabores(::labor).asFlow().mapToList(Dispatchers.Default)
+    fun observarPendientes()=q.observarPendientesPorLote().asFlow().mapToList(Dispatchers.Default).map { filas -> filas.associate { it.loteId to it.cantidad } }
     fun pendientes(usuario: String)=q.pendientes(usuario,::labor).executeAsList()
     fun buscar(id: Long)=q.buscarLabor(id,::labor).executeAsOneOrNull()
     fun siguienteId()=minOf(-1L,q.siguienteIdLocal().executeAsOne()-1)

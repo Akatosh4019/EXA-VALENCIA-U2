@@ -12,12 +12,13 @@ import pe.upeu.agrosierra.data.remote.AgroApi
 import kotlin.time.Clock
 import kotlin.time.Instant
 
-data class CampoUiState(val sesion: Sesion?=null,val lotes: List<Lote> = emptyList(),val visibles: List<Lote> = emptyList(),val labores: List<Labor> = emptyList(),val seleccionado: Long?=null,val busqueda: String="",val valle: String="",val soloAbiertas: Boolean=false,val ocupado: Boolean=false,val mensaje: String?=null,val error: String?=null,val campos: Map<String,String> = emptyMap(),val ultima: Long?=null,val reintentar: Boolean=false,val guardado: Int=0)
+data class CampoUiState(val sesion: Sesion?=null,val lotes: List<Lote> = emptyList(),val visibles: List<Lote> = emptyList(),val labores: List<Labor> = emptyList(),val seleccionado: Long?=null,val busqueda: String="",val valle: String="",val soloAbiertas: Boolean=false,val ocupado: Boolean=false,val mensaje: String?=null,val error: String?=null,val campos: Map<String,String> = emptyMap(),val ultima: Long?=null,val reintentar: Boolean=false,val guardado: Int=0,val pendientes: Map<Long,Long> = emptyMap())
 
 class CampoViewModel(private val repo: CampoRepository,private val api: AgroApi,private val estado: EstadoSesion,private val conexion: Conexion,private val sincronizar: SincronizarUseCase,private val guardarLabor: GuardarLaborUseCase,private val filtrar: FiltrarLotesUseCase): ViewModel() {
     private val _ui=MutableStateFlow(CampoUiState(sesion=estado.sesion.value,ultima=repo.ultimaSincronizacion()))
     val ui=_ui.asStateFlow()
     init {
+        viewModelScope.launch { repo.observarPendientes().collect { cantidades -> _ui.update { it.copy(pendientes=cantidades) } } }
         viewModelScope.launch { repo.observarLotes().collect { lista -> _ui.update { it.copy(lotes=lista,visibles=filtrar(lista,it.busqueda,it.valle,it.soloAbiertas)) } } }
         viewModelScope.launch { repo.observarLabores().collect { lista -> _ui.update { it.copy(labores=lista) } } }
         viewModelScope.launch { estado.sesion.collect { s -> _ui.update { it.copy(sesion=s,seleccionado=null,error=estado.aviso.value) } } }
